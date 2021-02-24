@@ -37,15 +37,15 @@ All surfaces are currently made of a triangular mesh. So a square mirror seen fa
 -----------
 ```
 
-[Example using two identical mirrors (the same reflectivity) and 100,000 photons.](bin/readme/rayTraced_twoMirrorsIdentical.png)
+[Example using two identical mirrors (the same reflectivity) and 100,000 photons.](rayTracing/bin/readme/rayTraced_twoMirrorsIdentical.png)
 
 <img width="300" src="bin/readme/rayTraced_twoMirrorsIdentical.png">
 
-[Example using two mirrors with different reflectivities and 100,000 photons.](bin/readme/rayTraced_twoMirrorsDifferent.png)
+[Example using two mirrors with different reflectivities and 100,000 photons.](rayTracing/bin/readme/rayTraced_twoMirrorsDifferent.png)
 
 <img width="300" src="bin/readme/rayTraced_twoMirrorsDifferent.png">
 
 ## Roadmap
 - [x] Create proof of concept.
-- [ ] Cretae objects which automatically build a triangular mesh.
+- [ ] Create objects which automatically build a triangular mesh.
 - [ ] Add roughness parameters to surfaces
