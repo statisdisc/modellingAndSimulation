@@ -1,3 +1,5 @@
+import numpy as np
+
 class cubeMesh2D:
     def __init__(
         self, 

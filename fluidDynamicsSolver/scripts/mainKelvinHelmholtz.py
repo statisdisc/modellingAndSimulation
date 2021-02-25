@@ -4,19 +4,22 @@ is a surface with wind shear either side of it.
 '''
 import os
 import sys
+import time
 import numpy as np
 
 # User-made modules
 sys.path.append( os.path.dirname( os.path.dirname( os.path.abspath(__file__) ) ) )
 from src.objects.folders import folders
 from src.objects.cubeMesh2D import cubeMesh2D
+from src.objects.finiteVolumeCalculations import finiteVolumeFunctions
+from src.objects.runSettings import runSettings
+from src.plots.plotContour import plotContour
 from src.utilities.makeGif import makeGif
+from src.utilities.fieldOperations import *
 
-def main()
+def main():
     # Fetch folders for code structure
-    folder = folders(
-        folderScripts=os.path.dirname(os.path.realpath(__file__))
-    )
+    folder = folders( folderScripts=os.path.dirname(os.path.realpath(__file__)) )
     
     # Import the mesh for the fluid solver
     mesh = cubeMesh2D(xPeriodic=True)
@@ -26,7 +29,7 @@ def main()
 
     # Initialise the simulation
     simulation = runSettings(
-        dt=0.1,                 # Timestep for simulation
+        dt=0.01,                 # Timestep for simulation
         tEnd=1000,              # End time (s) of simulation
         plotInterval=10.        # Plot every [plotInterval] seconds
     )
@@ -56,6 +59,9 @@ def main()
     tracer += 0.999
     tracer[:49,:] = 0.
     tracer[:51,50:150] = 0.
+    
+    
+    dt = simulation.dt
 
     # Plot initial conditions
     plotContour(x.flatten(), z.flatten(), tracer.flatten(), "z_kh_0.png", folder=folder.outputs)
