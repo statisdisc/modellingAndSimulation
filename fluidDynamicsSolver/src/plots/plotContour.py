@@ -1,3 +1,9 @@
+import os
+import sys
+import matplotlib.pyplot as plt
+import matplotlib.tri as tri
+import matplotlib.transforms as tr
+
 def plotContour(x, y, z, filename, 
         cmap="bwr", 
         folder="", 
@@ -30,11 +36,13 @@ def plotContour(x, y, z, filename,
     if hide_labels:
         plt.tick_params(axis='both', labelleft='off', labeltop='off', labelright='off', labelbottom='off')
         # plt.tick_params(axis='both', left='off', top='off', right='off', bottom='off', labelleft='off', labeltop='off', labelright='off', labelbottom='off')
-        
+    
+    # Labels and formating
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.suptitle(title)
     
+    # Ensure x and y axis have same scaling to prevent distorted view of physics
     if equal_aspect_ratio:
         plt.gca().set_aspect("equal")
     fig.tight_layout()
