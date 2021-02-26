@@ -32,6 +32,7 @@ A Kelvin-Helmholtz instability is a well-studied phenomena which occurs when the
 <b>After 100,000 timesteps</b> (approaching equilibrium):
 <img width="75%" src="/readmeImages/kelvinHelmholtz_100000.png">
 
+
 # Ray Tracing in Python 2.7
 Programme which simulates classical photons and their interaction with surfaces, in order to produce images.
 
@@ -80,3 +81,11 @@ All surfaces are currently made of a triangular mesh. So a square mirror seen fa
 - [x] Create proof of concept.
 - [ ] Create objects which automatically build a triangular mesh.
 - [ ] Add roughness parameters to surfaces
+
+
+
+
+# Magnetic atom trap generator in Python 2.7
+Programme which randomly generated microscopic wire configurations which are capable of trapping neutral atoms (via the Zeeman effect) when an external magnetic field is applied. Applications for quantum computers and rotation sensors.
+
+<img width="75%" src="/readmeImages/magnetic_trap_3.png">
