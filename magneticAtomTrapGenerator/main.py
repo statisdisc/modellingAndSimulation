@@ -1,9 +1,11 @@
 import numpy as np
-import pylab as plt
 import random as rn
 import sys
 import os
 import time
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 from matplotlib import gridspec
 from scipy.optimize import curve_fit
