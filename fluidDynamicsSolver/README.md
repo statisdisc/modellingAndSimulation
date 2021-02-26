@@ -11,7 +11,7 @@ Python 2.7 with NumPy, SciPy and Matplotlib installed.
 - Plots and images are saved in the ```outputs``` folder (automatically generated).
 
 ## Examples
-A Kelvin-Helmholtz instability is a well-studied phenomena which occurs when there is shear (different velocities) at the surface of a fluid (or fluid region). Even with the smallest perturbation in the fluids surface, the perturbation will grow - initially exponentially but, when large enough, non-linear effects cause over-turning circulations which form tidal-wave-like feautures. (Indeed this is the exact instability which forms waves in the sea, when the wind speed is different from the speed of the water in the ocean).
+A Kelvin-Helmholtz instability is a well-studied phenomena which occurs when there is shear (different velocities) at the surface of a fluid (or fluid region). Even with the smallest perturbation in the fluids surface, the perturbation will grow - initially exponentially but, when large enough, non-linear effects cause over-turning circulations which form tidal-wave-like feautures. (Indeed this is the exact instability which forms waves in the sea, when the wind speed is different from the speed of the water in the ocean, as well as at the edges of clouds).
 
 <b>Initial conditions</b> (small perturbation at interface):
 <img width="75%" src="/readmeImages/kelvinHelmholtz_0.png">
