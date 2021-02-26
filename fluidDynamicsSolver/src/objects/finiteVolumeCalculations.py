@@ -92,23 +92,21 @@ class finiteVolumeFunctions:
         return xField, zField
     
     def div(self, field, u, scheme):
-        divField = self.mesh.volScalarField.copy()
+        "Calculate the divergence in a cell as the some of fluxes over all faces (Gauss' law)"
         
         if scheme == "upwind":
             fieldFacex, fieldFacez = self.interpolateUpwind(field, u)
         else:
             fieldFacex, fieldFacez = self.interpolateLinear(field)
         
-        ux = u[:,:,0]
-        uz = u[:,:,1]
+        uxFacex, uxFacez = self.interpolateLinear(u[:,:,0])
+        uzFacex, uzFacez = self.interpolateLinear(u[:,:,1])
+        
         uFacex = u.copy()
-        uFacez = u.copy()
-        
-        uxFacex, uxFacez = self.interpolateLinear(ux)
-        uzFacex, uzFacez = self.interpolateLinear(uz)
-        
         uFacex[:,:,0] = uxFacex
         uFacex[:,:,1] = uzFacex
+        
+        uFacez = u.copy()
         uFacez[:,:,0] = uxFacez
         uFacez[:,:,1] = uzFacez
         
@@ -120,10 +118,11 @@ class finiteVolumeFunctions:
         if not self.mesh.zPeriodic:
             fluxz[-1,:] *= 0.
         
-        divField += np.roll(fluxx, -1, axis=1) - fluxx
-        divField += np.roll(fluxz,  1, axis=0) - fluxz
+        divergence = self.mesh.volScalarField.copy()
+        divergence += np.roll(fluxx, -1, axis=1) - fluxx
+        divergence += np.roll(fluxz,  1, axis=0) - fluxz
         
-        return divField
+        return divergence
     
     def laplacian(self, field):
         laplacianFieldx = self.mesh.volScalarField.copy()
@@ -190,3 +189,16 @@ class finiteVolumeFunctions:
         fieldNew2D = np.reshape(fieldNew, (-1, lengthX))
         
         return fieldNew2D
+    
+    def setBoundaryConditions(self, field):
+        "Enforce boundary conditions where necessary"
+        
+        if not self.mesh.xPeriodic:
+            field[:,0] = field[:,1]
+            field[:,-1] = field[:,-2]
+        
+        if not self.mesh.zPeriodic:
+            field[0,:] = field[1,:]
+            field[-1,:] = field[-2,:]
+        
+        return field

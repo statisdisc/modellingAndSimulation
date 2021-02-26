@@ -23,6 +23,8 @@ def main():
     
     # Import the mesh for the fluid solver
     mesh = cubeMesh2D(xPeriodic=True)
+    x = mesh.x
+    z = mesh.z
 
     # Import finite volume operations using mesh geometry
     fvc = finiteVolumeFunctions(mesh)
@@ -35,57 +37,69 @@ def main():
     )
 
 
-    x = mesh.x
-    z = mesh.z
+    
 
-    #Constants
+    # Constants
     T = 300
     R = 8.31
     g = mesh.volVectorField.copy()
     # g[:,:,1] = -9.81
-
-    #Velocity field
+    
+    
+    '''
+    INITIAL CONDITIONS
+    '''
+    # Velocity field
     u = mesh.volVectorField.copy()
     u += 10.
     u[:49,:] = -10.
     u[:51,50:150] = -10.
 
-    #Density field
+    # Density field
     rho = 0*mesh.volScalarField.copy() + 1
-    # rho[:49,:] = 0.5
-    # rho[:51,50:150] = 0.5
 
     tracer = mesh.volScalarField.copy()
     tracer += 0.999
-    tracer[:49,:] = 0.
-    tracer[:51,50:150] = 0.
+    tracer[:49,:] = 0.001
+    tracer[:51,50:150] = 0.001
     
     
     dt = simulation.dt
 
     # Plot initial conditions
-    plotContour(x.flatten(), z.flatten(), tracer.flatten(), "z_kh_0.png", folder=folder.outputs)
+    plotContour(x, z, tracer, "kelvinHelmholtz_0.png", folder=folder.outputs)
+    
+    # Run simulation until end time is reached
     while simulation.updateTime():
         sys.stdout.write("\rRunning simulation, t={}s".format(simulation.currentTime))
         sys.stdout.flush()
         
         pressure = rho*R*T
-        rhoVec = mesh.volVectorField.copy()
-        rhoVec[:,:,0] = rho
-        rhoVec[:,:,1] = rho
         
-        u = u - dt*fvc.uDotGradU(u, "upwind") + dt*g - dt*fvc.grad(pressure, "linear")/rhoVec
-        
+        # Continuity equation
         rho = rho - dt*fvc.div(rho, u, "upwind")
-        tracer = tracer - dt*fvc.div(tracer, u, "upwind")
+        rho = fvc.setBoundaryConditions(rho)
+        
+        # Momentum equation
+        u = u - dt*fvc.uDotGradU(u, "upwind") + dt*g - dt*fvc.grad(pressure, "linear")/rho[:,:,None]
+        u = fvc.setBoundaryConditions(u)
+        
+        # Advection of tracers which follow the flow
+        tracer = tracer - dt*dot(u, fvc.grad(tracer, "upwind", u=u))
         
         if simulation.plotFigures():
             print "\nPlotting profiles at t={}s".format(simulation.currentTime)
-            fileId = "z_kh_{}.png".format(simulation.currentTimeIndex)
-            # plotContour(x.flatten(), z.flatten(), rho.flatten(), fileId, vmin=0.5)
-            plotContour(x.flatten(), z.flatten(), tracer.flatten(), fileId, folder=folder.outputs)
-            # plotContour(x.flatten(), z.flatten(), u[:,:,0].flatten(), fileId, vmin=0., vmax=15.)
-        
+            
+            fileId = "kelvinHelmholtz_{}.png".format(simulation.currentTimeIndex)
+            plotContour(x, z, tracer, fileId, folder=folder.outputs)
+            
+            # plotContour(x, z, rho, fileId, vmin=0.5, folder=folder.outputs)
+            # plotContour(x, z, u[:,:,0], fileId, vmin=0., vmax=15., folder=folder.outputs)
+
+
+
+
+
 if __name__ == "__main__":
     timeInit = time.time()
     main()

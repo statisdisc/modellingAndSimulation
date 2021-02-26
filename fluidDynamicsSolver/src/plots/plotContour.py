@@ -1,5 +1,7 @@
 import os
 import sys
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.tri as tri
 import matplotlib.transforms as tr
@@ -17,6 +19,11 @@ def plotContour(x, y, z, filename,
         vmax=1.,
         hide_labels=True,
         equal_aspect_ratio=True):
+    
+    # Ensure arrays are one dimensional for contour functions
+    x = x.flatten()
+    y = y.flatten()
+    z = z.flatten()
     
     dpi = 200.
     if equal_aspect_ratio:
