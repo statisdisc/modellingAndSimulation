@@ -1,5 +1,9 @@
 # modellingAndSimulation
-Master repository for modelling and simulation based projects
+Master repository for modelling and simulation based projects including:
+- Computational fluid dynamics solver
+- Magnetic atom trap generator
+- Laser atom trap model (Magneto-optical trap)
+- Ray tracing and interaction with objects
 
 # Ray Tracing in Python 2.7
 Programme which simulates classical photons and their interaction with surfaces, in order to produce images.
