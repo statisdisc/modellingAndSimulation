@@ -1,3 +1,10 @@
+'''
+Code which randomly produces an electrical circuit with series of straight wires.
+If a minimum in the magnetic field (a well) is found at the centre of the domain
+then the set-up is useful for trapping neutral atoms and is output by the code.
+
+To do: Put sections of code below into functions to make main.py cleaner and clearer
+'''
 import numpy as np
 import random as rn
 import sys
@@ -9,13 +16,9 @@ import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 from matplotlib import gridspec
 from scipy.optimize import curve_fit
-from wire_class import *
 
-####################################
-#Code which randomly produces an electrical circuit with series of straight wires.
-#If a minimum in the magnetic field (a well) is found at the centre of the domain
-#then the set-up is useful for trapping neutral atoms and is output by the code.
-####################################
+# User-made modules and functions
+from src.wire import wire
 
 ''''''''''''''''''''''''''''''''''''
 '''         USER OPTIONS         '''
@@ -28,6 +31,9 @@ N_min = 4                           #Minimum number of randomly generated wires.
 N_max = 5                           #Maximum number of randomly generated wires.
 Nconfigs = 5                        #Number of configurations to be output by the code.
 directory = sys.path[0]             #Directory of image files to be saved. Default: Directory of code.
+
+
+
 
 #Produce Nconfigs wires.
 for Nconfig in range(Nconfigs):
