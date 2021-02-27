@@ -4,6 +4,7 @@ Master repository for modelling and simulation based projects including:
 - Magnetic atom trap generator
 - Laser atom trap model (Magneto-optical trap)
 - Ray tracing and interaction with objects
+More information for each project is given below.
 
 <br>&nbsp;<br>
 # Computational fluid dynamics solver in Python 2.7
