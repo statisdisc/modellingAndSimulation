@@ -1,9 +1,17 @@
-import numpy as np
-import pylab as plt
+'''
+Script for modelling the forces on neutral Rb-87 atoms in a magneto optical trap
+with a single laser and reflection gratings
+'''
 import os
 import sys
-from grating_class import *
-from physics_functions import *
+import numpy as np
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+
+# User-made modules and functions
+from src.grating import grating
+from src.physics import *
 
 ####################################
 #Calculate the magnetic field and lazer intensity in region of atom trap
