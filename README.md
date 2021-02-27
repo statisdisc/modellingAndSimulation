@@ -5,6 +5,7 @@ Master repository for modelling and simulation based projects including:
 - Laser atom trap model (Magneto-optical trap)
 - Ray tracing and interaction with objects
 - Using machine learning for advection
+
 More information for each project is given below.
 
 <br>&nbsp;<br>
