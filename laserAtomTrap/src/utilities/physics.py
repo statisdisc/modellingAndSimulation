@@ -25,7 +25,7 @@ def B_mag(pos):
     
     
 #Find the acceleration due to a light beam at a point vec{x}.
-def a(k,x,theta,I=1.0,factor=1.0):
+def acceleration(k, x, I=1.0, factor=1.0):
     Delta = -2*np.pi*10**(7)                #Laser detuning, Hz.
     Gamma = 2*np.pi*6.067*10**(6)           #Natural linewidth.
     m = 1.443*10**(-25)                     #Atomic Mass of Rb 87.
@@ -44,5 +44,5 @@ def a(k,x,theta,I=1.0,factor=1.0):
     a_pi = 0.5*a_0*(1-(np.dot(k,B)/mod_B)**2)/(1+s_0+(2*Delta/Gamma)**2)
     a_sigmap = 0.25*a_0*(1-factor*(np.dot(k,B)/mod_B))**2/(1+s_0+(2*(Delta-mu_b*mod_B/hbar)/Gamma)**2)
     a_sigmam = 0.25*a_0*(1+factor*(np.dot(k,B)/mod_B))**2/(1+s_0+(2*(Delta+mu_b*mod_B/hbar)/Gamma)**2)
-    a = (a_pi+a_sigmap+a_sigmam)*k 
+    a = (a_pi + a_sigmap + a_sigmam)*k 
     return a
