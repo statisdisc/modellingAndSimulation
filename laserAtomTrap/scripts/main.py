@@ -10,6 +10,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 # User-made modules and functions
+sys.path.append( os.path.dirname( os.path.dirname( os.path.abspath(__file__) ) ) )
 from src.grating import grating
 from src.physics import *
 
@@ -101,11 +102,11 @@ j_check[x_axis] = 1.
 
 labels = ['x','y','z']
 if rad_press == True:
-    print "Generating Radiation Pressure Profile in %s-%s Plane" % (labels[x_axis],labels[y_axis])
+    print("Generating Radiation Pressure Profile in %s-%s Plane" % (labels[x_axis],labels[y_axis]))
 else:
-    print "Generating Acceleration Profile in %s-%s Plane" % (labels[x_axis],labels[y_axis])
+    print("Generating Acceleration Profile in %s-%s Plane" % (labels[x_axis],labels[y_axis]))
 for i in range(len(acc)):
-    sys.stdout.write('\rProgress: {0}%'.format(i*100/resolution+1))
+    sys.stdout.write('\rProgress: {0:.2f}%'.format(i*100/resolution+1))
     sys.stdout.flush()
     for j in range(len(acc[0])):
         #Generate coordinate [x,y,z].
@@ -186,8 +187,8 @@ v = np.zeros((div,div))
 fake = np.zeros((div,div))
 for i in range(div):
     for j in range(div):
-        u[i][j] = acc_hor[i*(resolution-1)/(div-1)][j*(resolution-1)/(div-1)]
-        v[i][j] = acc_vert[i*(resolution-1)/(div-1)][j*(resolution-1)/(div-1)]
+        u[i][j] = acc_hor[round(i*(resolution-1)/(div-1))][round(j*(resolution-1)/(div-1))]
+        v[i][j] = acc_vert[round(i*(resolution-1)/(div-1))][round(j*(resolution-1)/(div-1))]
 if np.max(acc) != 0.:
     u = u/abs(scaling*np.max(acc))
     v = v/abs(scaling*np.max(acc))
