@@ -47,7 +47,7 @@ A Kelvin-Helmholtz instability is a well-studied phenomena which occurs when the
 Programme which models the forces experiences by neutral Rb-87 atoms in the presence of lasers and a magnetic field.
 
 ## Prerequisites
-Python 2.7 with NumPy, SciPy and Matplotlib installed.
+Python 3.8 with NumPy, SciPy and Matplotlib installed.
 
 ## How it works
 
