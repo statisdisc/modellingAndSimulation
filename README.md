@@ -43,7 +43,7 @@ A Kelvin-Helmholtz instability is a well-studied phenomena which occurs when the
 
 <br>&nbsp;<br>
 <br>&nbsp;<br>
-# Model of a Magneto-Optical Trap (MOT) for Rubidium-87 atoms in Python 2.7
+# Model of a Magneto-Optical Trap (MOT) for Rubidium-87 atoms in Python 3.8
 Programme which models the forces experiences by neutral Rb-87 atoms in the presence of lasers and a magnetic field.
 
 ## Prerequisites
