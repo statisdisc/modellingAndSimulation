@@ -2,6 +2,12 @@
 *.png
 *.gif
 
+# Data files
+*.np
+*.npz
+*.dat
+*.csv
+
 # Windows compatibility files
 *.attrs
 

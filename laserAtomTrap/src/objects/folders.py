@@ -2,7 +2,7 @@ import os
 import sys
 
 class folders:
-    def __init__(self, folderScripts="", folderOutputs=""):
+    def __init__(self, id="", folderScripts="", folderOutputs=""):
         if folderScripts == "":
             folderScripts = sys.path[0]
         
@@ -23,3 +23,9 @@ class folders:
         
         if not os.path.isdir(self.outputs):
             os.makedirs(self.outputs)
+        
+        if id != "":
+            self.outputs = os.path.join(self.outputs, id)
+            
+            if not os.path.isdir(self.outputs):
+                os.makedirs(self.outputs)
