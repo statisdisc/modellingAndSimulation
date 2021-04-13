@@ -1,8 +1,10 @@
-# Model of a Magneto-Optical Trap (MOT) for Rubidium-87 atoms in Python 2.7
+# Model of a Magneto-Optical Trap (MOT) for Rubidium-87 atoms in Python 3.8
 Programme which models the forces experiences by neutral Rb-87 atoms in the presence of lasers and a magnetic field.
 
 ## Prerequisites
-Python 2.7 with NumPy, SciPy and Matplotlib installed.
+Python 3.8 with NumPy, SciPy and Matplotlib installed.
+
+10GB+ RAM required for resolutions greater than 300x300x300.
 
 ## How it works
 
