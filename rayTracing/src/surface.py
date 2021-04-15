@@ -17,27 +17,34 @@ class surface:
         self.normalVector = np.cross(self.vertices[1]-self.vertices[0], self.vertices[2]-self.vertices[0])
         self.normalVector *= 1./np.dot(self.normalVector, self.normalVector)
         
-        #Indeces for longest line on surface
+        #Indices for longest line on surface
         self.longestEdge = self.longestEdgeIndeces()
-        print "Longest edge from vertex {} ({}) to vertex {} ({})".format(self.longestEdge[0], self.vertices[self.longestEdge[0]], self.longestEdge[1], self.vertices[self.longestEdge[1]])
+        print("Longest edge from vertex {} ({}) to vertex {} ({})".format(self.longestEdge[0], self.vertices[self.longestEdge[0]], self.longestEdge[1], self.vertices[self.longestEdge[1]]))
         
         #Leftover index which is not on longest line
         self.vertexShortIndex = [x for x in range(3) if x not in self.longestEdge][0]
         self.vertexShort = self.vertices[self.vertexShortIndex]
-        print "Vertex not on longest edge: {} ({})".format(self.vertexShortIndex, self.vertexShort)
+        print("Vertex not on longest edge: {} ({})".format(self.vertexShortIndex, self.vertexShort))
         
         #Determine leftover vertex position relative to longest line.
         #0 or 1 for right-angle triangles
         self.vertexShortTranslationFactor = self.translationFactor(self.vertexShort);
-        print "Vertex translation factor for vertex {}: {}".format(self.vertexShortIndex, self.vertexShortTranslationFactor)
+        print("Vertex translation factor for vertex {}: {}".format(self.vertexShortIndex, self.vertexShortTranslationFactor))
         
         self.vertexShortNormalIntersection = self.vertices[self.longestEdge[0]] + self.vertexShortTranslationFactor*(self.vertices[self.longestEdge[1]]-self.vertices[self.longestEdge[0]]);
         self.vertexShortNormalVector = self.vertexShort - self.vertexShortNormalIntersection;
     
-    #Return indeces of vertices which form the longest line between them
+    def dot(self, vector1, vector2):
+        "Dot product for the inner-most array elements"
+        return np.sum(vector1*vector2, axis=-1)
+    
+    def mag(self, vector):
+        return np.sqrt(self.dot(vector, vector))
+    
+    #Return indices of vertices which form the longest line between them
     def longestEdgeIndeces(self):
         edgeVectors = self.vertices - np.roll(self.vertices, -1, axis=0)
-        edgeLengths = np.array([np.dot(edgeVectors[0], edgeVectors[0]), np.dot(edgeVectors[1], edgeVectors[1]), np.dot(edgeVectors[2], edgeVectors[2])])
+        edgeLengths = np.array([self.dot(edgeVectors[0], edgeVectors[0]), self.dot(edgeVectors[1], edgeVectors[1]), self.dot(edgeVectors[2], edgeVectors[2])])
         argMax = np.argmax(edgeLengths)
         
         return [argMax, (argMax+1)%3]
@@ -47,7 +54,7 @@ class surface:
         y = self.vertices[self.longestEdge[1]]
         z = coord
         
-        solution = np.dot(y-x, z-x)/np.dot(y-x, y-x)
+        solution = self.dot(y-x, z-x)/self.dot(y-x, y-x)
         
         return solution
     
@@ -56,47 +63,71 @@ class surface:
         y = vectorFinish
         z = coord
         
-        translationFactor = np.dot(y-x, z-x)/np.dot(y-x, y-x)
+        translationFactor = self.dot(y-x, z-x)/self.dot(y-x, y-x)
         
-        coordIntersect = x + translationFactor*(y-x)
+        if type(translationFactor) != np.ndarray:
+            coordIntersect = x + translationFactor*(y-x)
+        else:
+            coordIntersect = x + translationFactor[:,None]*(y-x)[None,:]
         
         return coord - coordIntersect
     
-    def intersectPlane(self, vectorOrigin, vectorDirection, reflectivity):
-        intersectionPoint = self.intersectionPoint(vectorOrigin, vectorDirection)
-        if (type(intersectionPoint) != bool):
-            if (self.intersect(intersectionPoint)):
-                #Calculate new direction once reflected
-                translationFactor = np.dot(vectorOrigin-2*intersectionPoint, self.normalVector)/np.dot(self.normalVector, self.normalVector)
-                # vectorDirectionNew = intersectionPoint - vectorOrigin + translationFactor*self.normalVector
-                vectorDirectionNew = vectorDirection + 2*self.normalVector*np.sign(np.dot(-self.normalVector, vectorDirection))
-                # print "\n", vectorDirection, self.normalVector, vectorDirectionNew
-                return intersectionPoint, vectorDirectionNew, reflectivity*self.reflectivity
-            else:
-                return vectorOrigin, vectorDirection, reflectivity
-        else:
-            return vectorOrigin, vectorDirection, reflectivity
+    def intersectSurface(self, vectorOrigin, vectorDirection, intensity):
+        '''
+        Determine whether an incident vector intersects this surface.
+        vectorOrigin and vectorDirection must be of the 2D form:
+        [[a1,a2,a3],[b1,b2,b3],[b1,b2,b3],...,[h1,h2,h3]]
+        '''
+        if vectorOrigin.ndim == 1:
+            raise ValueError("Input vectors must be 2D")
         
-    def intersectionPoint(self, vectorOrigin, vectorDirection):
-        if np.dot(vectorDirection, self.normalVector) == 0.:
-            return False
-
-        translationFactor = np.dot(self.vertices[0]-vectorOrigin, self.normalVector)/np.dot(vectorDirection, self.normalVector)
-        return vectorOrigin + translationFactor*vectorDirection
+        indices = np.arange(len(vectorOrigin))
+        
+        intersectionPoints, conditionIntersect = self.intersect(vectorOrigin, vectorDirection)
+        indices = indices[conditionIntersect]
+        intersectionPoints = intersectionPoints[conditionIntersect]
+        
+        if len(indices) > 0:
+            #Calculate new direction once reflected
+            translationFactor = self.dot(vectorOrigin[conditionIntersect]-2*intersectionPoints, self.normalVector)/self.mag(self.normalVector)
+            vectorDirectionNew = vectorDirection[conditionIntersect] + 2*self.normalVector[None,:]*np.sign(self.dot(-self.normalVector, vectorDirection[conditionIntersect]))[:,None]
+            
+            vectorOrigin[indices] = intersectionPoints
+            vectorDirection[indices] = vectorDirectionNew
+            intensity[indices] *= self.reflectivity
+        
+        return vectorOrigin, vectorDirection, intensity
+        
+    def intersectionPointOnPlane(self, vectorOrigin, vectorDirection):
+        '''
+        This surface is defined on a 2D plane. For a given vector, see where the intersection point
+        is with the plane.
+        This can be used to determine whether the intersection point is on the actual surface.
+        '''
+        # Remove points which are parallel to the plane and won't intrsect
+        conditionParallel = self.dot(vectorDirection, self.normalVector) == 0.
+        vectorOrigin[conditionParallel] *= np.nan
+        vectorDirection[conditionParallel] *= np.nan
+        
+        translationFactor = self.dot(self.vertices[0]-vectorOrigin, self.normalVector)/self.dot(vectorDirection, self.normalVector)
+        return vectorOrigin + translationFactor[...,None]*vectorDirection, np.invert(conditionParallel)
     
-    def intersect(self, intersectionPoint):
-        translationFactor = self.translationFactor(intersectionPoint)
-        normalVector = intersectionPoint - self.vertexShortNormalIntersection
+    def intersect(self, vectorOrigin, vectorDirection):
+        intersectionPoints, condition0 = self.intersectionPointOnPlane(vectorOrigin, vectorDirection)
+        
+        translationFactor = self.translationFactor(intersectionPoints)
+        normalVector = intersectionPoints - self.vertexShortNormalIntersection
         
         vec0 = self.getNormalVector(self.vertices[1], self.vertices[2], self.vertices[0])
         vec1 = self.getNormalVector(self.vertices[0], self.vertices[2], self.vertices[1])
         vec2 = self.getNormalVector(self.vertices[1], self.vertices[0], self.vertices[2])
         
-        vecIntersectionPoint0 = self.getNormalVector(self.vertices[1], self.vertices[2], intersectionPoint)
-        vecIntersectionPoint1 = self.getNormalVector(self.vertices[0], self.vertices[2], intersectionPoint)
-        vecIntersectionPoint2 = self.getNormalVector(self.vertices[1], self.vertices[0], intersectionPoint)
+        vecIntersectionPoint0 = self.getNormalVector(self.vertices[1], self.vertices[2], intersectionPoints)
+        vecIntersectionPoint1 = self.getNormalVector(self.vertices[0], self.vertices[2], intersectionPoints)
+        vecIntersectionPoint2 = self.getNormalVector(self.vertices[1], self.vertices[0], intersectionPoints)
         
-        if (np.dot(vec0, vecIntersectionPoint0) >= 0) and (np.dot(vec1, vecIntersectionPoint1) >= 0) and (np.dot(vec2, vecIntersectionPoint2) >= 0):
-            return True
-        else:
-            return False
+        condition1 = self.dot(vecIntersectionPoint0, vec0) >= 0
+        condition2 = self.dot(vecIntersectionPoint1, vec1) >= 0
+        condition3 = self.dot(vecIntersectionPoint2, vec2) >= 0
+        
+        return intersectionPoints, condition0*condition1*condition2*condition3
