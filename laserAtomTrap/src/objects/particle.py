@@ -2,9 +2,10 @@ import numpy as np
 
 class particle:
     # Initialising function. Declare variables.
-    def __init__(self, position, velocity):
+    def __init__(self, position, velocity, dragCoefficient=0.):
         self.position = position
         self.velocity = velocity
+        self.dragCoefficient = dragCoefficient
         
         self.positions = []
         self.velocities = []
@@ -28,11 +29,17 @@ class particle:
         
         self.addHistory()
     
+    def drag(self):
+        '''
+        Calculate the drag of the particle with respect to its frame of reference
+        '''
+        return -self.dragCoefficient * np.sqrt(np.dot(self.velocity,self.velocity)) * self.velocity
+    
     def move(self, a, dt):
         '''
         Move the particle given an acceleration (a) and a timestep (dt)
         '''
-        self.velocity = self.velocity + dt*a
+        self.velocity = self.velocity + dt*a + dt*self.drag()
         self.position = self.position + dt*self.velocity
         
         self.addHistory()
