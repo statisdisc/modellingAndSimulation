@@ -52,20 +52,11 @@ def simulateAtoms(id="default"):
     axisZ = data["axisZ"]
     coords = np.stack((x,y,z), axis=-1)
     
+    
+    # Generate particles
     particles = []
     nParticles = 50
     for i in range(nParticles):
-        # particles.append(
-            # particle(
-                # [
-                    # random.uniform(data["axisX"][0], data["axisX"][-1]),
-                    # random.uniform(data["axisY"][0], data["axisY"][-1]),
-                    # random.uniform(data["axisZ"][0], data["axisZ"][-1])
-                # ],
-                # [0,0,0],
-                # dragCoefficient = 10.
-            # )
-        # )
         particles.append(
             particle(
                 [
@@ -121,6 +112,7 @@ def simulateAtoms(id="default"):
     # condition = aMag < cutOff
     # ax.plot(x[condition], y[condition], z[condition], ".", color="#888888")
     
+    # Draw trajectories
     for i in range(nParticles):
         pos = np.array(particles[i].positions)
         zorder = 10000
@@ -140,11 +132,13 @@ def simulateAtoms(id="default"):
     ax.set_ylabel("y (cm)")
     ax.set_zlabel("z (cm)")
     
+    # Save images from different perspectives
     for i in np.linspace(0,1,25):
         elevation = 90*i
         angle = 90+360*i
         ax.view_init(elev=elevation, azim=angle)
         plt.savefig(os.path.join(folder.outputs, "trajectories_{}_{}.png".format(id, int(360*i))), dpi=200)
+    
     plt.close()
 
     
