@@ -44,3 +44,16 @@ Using a specifically tailored magnetic field, Rb-87 atoms can be forced towards 
 Shown on the left is the output from this model. Shown on the right is the model by [McGilligan et al. (2015)](https://doi.org/10.1364/OE.23.008948).
 
 <img width="75%" src="/readmeImages/mot_diagram_4.png">
+
+
+### Trajectories of Rb-87 atoms
+Using the acceleration field from above, the trajectories of the atoms can be simulated using Lagrangian particles.
+
+The image below (left) shows the trajectories of the atoms (with a small amount of artificial drag applied), where the initial positions of the atoms has been randomised. As the atoms started within the trapping region, they converge to the trapping region center. Zooming out and again randomly initialising the atoms (below right), we can see that the atoms that are initially outside of the trapping region diverge away from the trap center.
+
+<img width="45%" src="/readmeImages/trajectories_triangleGaussian_0.png"> <img width="45%" src="/readmeImages/trajectories_triangleGaussianZoomOut_0.png">
+
+The trajectories viewed from different angles. The grey square represents the chip/grating and the red circle represents the laser beam cross section when it hits the grating.
+
+<img width="45%" src="/readmeImages/trajectories_triangleGaussianZoomOut_225.png"> <img width="45%" src="/readmeImages/trajectories_triangleGaussianZoomOut_360.png">
+
